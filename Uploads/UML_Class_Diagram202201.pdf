@@ -1,0 +1,74 @@
+digraph {
+	rankdir=TB size="8,10"
+	Administrateur [label="<<class>>
+Administrateur
+- id : int
+- nom : String
+- email : String
+-----------------------
++ validerDeveloppeur(d : Developpeur) : void
++ supprimerDeveloppeur(d : Developpeur) : void
+"]
+	Developpeur [label="<<class>>
+Developpeur
+- id : int
+- nom : String
+- prenom : String
+- email : String
+- login : String
+- motDePasse : String
+-----------------------
++ creerApplication(n : String, c : String) : Application
++ creerClasse(n : String) : Classe
++ ajouterAttribut(n : String, t : String, p : String) : void
++ ajouterMethode(n : String, r : String, p : String, n : String, c : String, pr : Parametre[]) : void
++ genererGettersSetters() : void
++ genererConstructeurs() : void
++ editerClasse() : String
+"]
+	Application [label="<<class>>
+Application
+- id : int
+- nom : String
+- cheminFichier : String
+-----------------------
++ ajouterClasse(c : Classe) : void
+"]
+	Classe [label="<<class>>
+Classe
+- id : int
+- nom : String
+- attributs : Attribut[]
+- methodes : Methode[]
+-----------------------
++ ajouterAttribut(n : String, t : String, p : String) : void
++ ajouterMethode(n : String, r : String, p : String, n : String, c : String, pr : Parametre[]) : void
++ genererToString() : String
+"]
+	Attribut [label="<<class>>
+Attribut
+- nom : String
+- type : String
+- portee : String
+"]
+	Methode [label="<<class>>
+Methode
+- nom : String
+- typeRetour : String
+- portee : String
+- nature : String
+- code : String
+- parametres : Parametre[]
+"]
+	Parametre [label="<<class>>
+Parametre
+- nom : String
+- type : String
+"]
+	Administrateur -> Developpeur [label="gère"]
+	Developpeur -> Application [label="crée"]
+	Application -> Classe [label=contient]
+	Classe -> Attribut [label=a]
+	Classe -> Methode [label=a]
+	Methode -> Parametre [label=a]
+}

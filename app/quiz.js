@@ -1,223 +1,23 @@
-{/*import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
-
-const Quiz = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Quiz</Text>
-      <Text style={styles.description}>Testez vos connaissances avec des quiz interactifs</Text>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#666',
-  },
-});
-
-export default Quiz; 
-*/}
-{/*
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import QuizList from '../components/quiz/QuizList';
-import CreateQuiz from '../components/quiz/CreateQuiz';
-import TakeQuiz from '../components/quiz/TakeQuiz';
-import QuizResults from '../components/quiz/QuizResults';
-import { API_URL } from '../config';
-import QuizGenerator from '../components/quiz/QuizGenerator';
-import { View, StyleSheet } from 'react-native';
-
-const Stack = createStackNavigator();
-
-const QuizStack = (props) => {
-  const { navigation, route } = props;
-  const userType = route?.params?.userType || 'etudiant';
-  const userId = route?.params?.userId || 4;
-
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="QuizList" options={{ title: 'Quiz' }}>
-        {navProps => (
-          <QuizList
-            {...navProps}
-            API_URL={API_URL}
-            route={{ params: { userType, userId } }}
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="CreateQuiz" component={CreateQuiz} options={{ title: 'Créer un quiz' }} />
-      <Stack.Screen name="GenerateQuiz" options={{ title: 'Générer un quiz depuis PDF' }}>
-        {navProps => (
-          <QuizGenerator
-            {...navProps}
-            API_URL={API_URL}
-            route={{ params: { enseignantId: userId } }}
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="TakeQuiz" options={{ title: 'Passer le quiz' }}>
-        {navProps => (
-          <TakeQuiz
-            {...navProps}
-            API_URL={API_URL}
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="QuizResults" options={{ title: 'Résultats du quiz' }}>
-        {navProps => (
-          <QuizResults
-            {...navProps}
-            API_URL={API_URL}
-          />
-        )}
-      </Stack.Screen>
-    </Stack.Navigator>
-  );
-};
-
-export default QuizStack;
-
-export function QuizScreen() {
-  return (
-    <View style={styles.container}>
-      <QuizGenerator />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  // Ajoute ici d'autres styles si besoin
-});
-*/}{/*
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import QuizList from '../components/quiz/QuizList';
-import CreateQuiz from '../components/quiz/CreateQuiz';
-import TakeQuiz from '../components/quiz/TakeQuiz';
-import QuizResults from '../components/quiz/QuizResults';
-import { API_URL } from '../config';
-import QuizGenerator from '../components/quiz/QuizGenerator';
-import { View, StyleSheet, Text } from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
-
-const Stack = createStackNavigator();
-
-const QuizStack = (props) => {
-  const { user } = useAuth();
-  // Si l'utilisateur n'est pas enseignant, il n'a pas accès à la création/génération de quiz
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="QuizList" options={{ title: 'Quiz' }}>
-        {navProps => (
-          <QuizList
-            {...navProps}
-            API_URL={API_URL}
-            route={{ params: { userType: user?.type, userId: user?.id } }}
-          />
-        )}
-      </Stack.Screen>
-      {/* Si l'utilisateur est enseignant, il a accès à la création/génération de quiz 
-      {user?.type === 'enseignant' && (
-        <Stack.Screen name="CreateQuiz" component={CreateQuiz} options={{ title: 'Créer un quiz' }} />
-      )}
-      {user?.type === 'enseignant' && (
-        <Stack.Screen name="GenerateQuiz" options={{ title: 'Générer un quiz depuis PDF' }}>
-          {navProps => (
-            <QuizGenerator
-              {...navProps}
-              API_URL={API_URL}
-              route={{ params: { enseignantId: user?.id } }}
-            />
-          )}
-        </Stack.Screen>
-      )}
-      <Stack.Screen name="TakeQuiz" options={{ title: 'Passer le quiz' }}>
-        {navProps => (
-          <TakeQuiz
-            {...navProps}
-            API_URL={API_URL}
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="QuizResults" options={{ title: 'Résultats du quiz' }}>
-        {navProps => (
-          <QuizResults
-            {...navProps}
-            API_URL={API_URL}
-          />
-        )}
-      </Stack.Screen>
-    </Stack.Navigator>
-  );
-};
-
-export default QuizStack;
-
-export function QuizScreen() {
-  const { user } = useAuth();
-  if (user?.type !== 'enseignant') {
-    return (
-      <View style={styles.container}>
-        <Text>Accès réservé aux enseignants.</Text>
-      </View>
-    );
-  }
-  return (
-    <View style={styles.container}>
-      <QuizGenerator />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-  },
-  // Ajoute ici d'autres styles si besoin
-});*/}
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Image } from 'react-native';
 import QuizList from '../components/quiz/QuizList';
 import CreateQuiz from '../components/quiz/CreateQuiz';
 import TakeQuiz from '../components/quiz/TakeQuiz';
 import QuizResults from '../components/quiz/QuizResults';
-import { API_URL } from '../config';
 import QuizGenerator from '../components/quiz/QuizGenerator';
+import { API_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from './i18n';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 
-
-
-// Nouveau composant IntroScreen
-const IntroScreen = ({ onGetStarted }) => {
+// Composant QuizIntro pour l'écran de bienvenue
+const QuizIntro = ({ navigation }) => {
+  const { t } = useLanguage();
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const { t } = useLanguage();
 
   const handleGetStarted = () => {
     Animated.parallel([
@@ -232,7 +32,7 @@ const IntroScreen = ({ onGetStarted }) => {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      onGetStarted();
+      navigation.navigate('QuizList');
     });
   };
 
@@ -260,13 +60,81 @@ const IntroScreen = ({ onGetStarted }) => {
   );
 };
 
+// Composant QuizTypeSelector comme première page
+const QuizTypeSelector = ({ onSelectType }) => {
+  const [selectedType, setSelectedType] = useState(null);
+  const { t } = useLanguage();
+
+  const handleTypeSelect = (type) => {
+    setSelectedType(type);
+  };
+
+  const handleContinue = () => {
+    if (selectedType) {
+      onSelectType(selectedType);
+    }
+  };
+
+  return (
+    <View style={styles.typeSelectorContainer}>
+      <View style={styles.typeSelectorContent}>
+        <View style={styles.illustrationContainer}>
+          <Image 
+            source={require('../assets/Online test-amico.png')} 
+            style={styles.illustration} 
+            resizeMode="contain"
+          />
+        </View>
+        
+        <TouchableOpacity 
+          style={[
+            styles.typeButton,
+            selectedType === 'official' ? styles.selectedTypeButton : {}
+          ]} 
+          onPress={() => handleTypeSelect('official')}
+        >
+          <Text style={[
+            styles.typeButtonText,
+            selectedType === 'official' ? styles.selectedTypeButtonText : {}
+          ]}>{t('officialQuizzes')}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[
+            styles.typeButton,
+            selectedType === 'practice' ? styles.selectedTypeButton : {}
+          ]} 
+          onPress={() => handleTypeSelect('practice')}
+        >
+          <Text style={[
+            styles.typeButtonText,
+            selectedType === 'practice' ? styles.selectedTypeButtonText : {}
+          ]}>{t('interactiveQCM')}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[
+            styles.continueButton,
+            !selectedType ? styles.disabledContinueButton : {}
+          ]} 
+          onPress={handleContinue}
+          disabled={!selectedType}
+        >
+          <Text style={styles.continueButtonText}>{t('continue')}</Text>
+          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
 const QuizStack = (props) => {
   const { user } = useAuth();
-  const [showIntro, setShowIntro] = useState(true);
+  const [quizType, setQuizType] = useState(null);
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
-  const handleGetStarted = () => {
+  const handleQuizTypeSelect = (type) => {
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: -Dimensions.get('window').width,
@@ -279,21 +147,66 @@ const QuizStack = (props) => {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      setShowIntro(false);
+      setQuizType(type);
     });
   };
 
-  const handleBackToIntro = () => {
-    setShowIntro(true);
+  const handleBackToTypeSelector = () => {
+    setQuizType(null);
     slideAnim.setValue(0);
     fadeAnim.setValue(1);
   };
 
+  // Si l'utilisateur est un enseignant, on affiche d'abord l'écran de bienvenue
+  if (user?.type === 'enseignant') {
+    return (
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="QuizIntro" component={QuizIntro} />
+        <Stack.Screen name="QuizList">
+          {() => (
+            <QuizList
+              API_URL={API_URL}
+              route={{ 
+                params: { 
+                  userType: 'enseignant', 
+                  userId: user.id,
+                  quizType: 'official'
+                } 
+              }}
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
+        <Stack.Screen name="GenerateQuiz">
+          {navProps => (
+            <QuizGenerator
+              {...navProps}
+              API_URL={API_URL}
+              route={{ params: { enseignantId: user.id } }}
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="TakeQuiz" component={TakeQuiz} />
+        <Stack.Screen name="QuizResults" component={QuizResults} />
+      </Stack.Navigator>
+    );
+  }
+
+  // Pour les étudiants, on affiche d'abord la sélection du type de quiz
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {showIntro ? (
-        <Stack.Screen name="IntroScreen">
-          {() => <IntroScreen onGetStarted={handleGetStarted} />}
+      {!quizType ? (
+        <Stack.Screen name="QuizTypeSelector">
+          {() => (
+            <Animated.View
+              style={[
+                styles.container,
+                { transform: [{ translateX: slideAnim }], opacity: fadeAnim }
+              ]}
+            >
+              <QuizTypeSelector onSelectType={handleQuizTypeSelect} />
+            </Animated.View>
+          )}
         </Stack.Screen>
       ) : (
         <>
@@ -301,25 +214,17 @@ const QuizStack = (props) => {
             {() => (
               <QuizList
                 API_URL={API_URL}
-                route={{ params: { userType: user?.type, userId: user?.id } }}
-                onBackToIntro={handleBackToIntro}
+                route={{ 
+                  params: { 
+                    userType: user?.type, 
+                    userId: user?.id,
+                    quizType: quizType 
+                  } 
+                }}
+                onBackToTypeSelector={handleBackToTypeSelector}
               />
             )}
           </Stack.Screen>
-          {user?.type === 'enseignant' && (
-            <Stack.Screen name="CreateQuiz" component={CreateQuiz} />
-          )}
-          {user?.type === 'enseignant' && (
-            <Stack.Screen name="GenerateQuiz">
-              {navProps => (
-                <QuizGenerator
-                  {...navProps}
-                  API_URL={API_URL}
-                  route={{ params: { enseignantId: user?.id } }}
-                />
-              )}
-            </Stack.Screen>
-          )}
           <Stack.Screen name="TakeQuiz">
             {navProps => (
               <TakeQuiz
@@ -343,30 +248,110 @@ const QuizStack = (props) => {
 };
 
 const styles = StyleSheet.create({
-  introContainer: {
+  container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  introContent: {
+  typeSelectorContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  typeSelectorContent: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
   },
-  logoContainer: {
+  illustrationContainer: {
     marginBottom: 40,
   },
-  logoImage: {
+  illustration: {
     width: 200,
     height: 200,
     resizeMode: 'contain',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#6818A5',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  typeButton: {
+    backgroundColor: '#8B2FC9',
+    width: '100%',
+    padding: 15,
+    borderRadius: 30,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  selectedTypeButton: {
+    backgroundColor: '#AB51E3',
+    borderWidth: 2,
+    borderColor: '#5A108F',  },
+  typeButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  selectedTypeButtonText: {
+    color: '#fff',
+  },
+  continueButton: {
+    backgroundColor: '#AB51E3',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 30,
+    marginTop: 20,
+    width: '100%',
+  },
+  disabledContinueButton: {
+    backgroundColor: '#5A108F',
+    opacity: 0.7,
+  },
+  continueButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    marginRight: 8,
+    fontSize: 16,
+  },
+  introContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  introContent: {
+    width: '100%',
+    maxWidth: 400,
+    alignItems: 'center',
+  },
+  logoContainer: {
+    width: '100%',
+    height: 270,
+    marginBottom: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
   },
   introTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#6818A5',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   introSubtitle: {
     fontSize: 16,
@@ -377,18 +362,24 @@ const styles = StyleSheet.create({
   getStartedButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#6818A5',
+    backgroundColor: '#8B2FC9',
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderRadius: 25,
+    borderRadius: 50,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
   },
   getStartedArrows: {
-    color: '#fff',
-    fontSize: 20,
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
     marginRight: 10,
   },
   getStartedMainText: {
-    color: '#fff',
+    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },

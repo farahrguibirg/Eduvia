@@ -186,10 +186,10 @@ class QuizRepository:
         """Récupère un exercice QCM par son ID"""
         return Exercice.query.get(exercice_id)
     
-    def create_from_exercice(self, exercice, etudiant_id, chrono):
+    def create_from_exercice(self, exercice, etudiant_id, chrono, titre=None):
         """Crée un quiz à partir d'un exercice QCM existant"""
         new_quiz = Quiz(
-            titre=f"Quiz généré depuis QCM: {exercice.titre}",
+            titre=titre if titre else f"Quiz généré depuis QCM: {exercice.titre}",
             chrono=chrono,
             createur_id=etudiant_id,
             type="etudiant"  # Création par un étudiant

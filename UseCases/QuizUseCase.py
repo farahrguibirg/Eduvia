@@ -142,11 +142,12 @@ class QuizGenerationUseCase:
         if not exercice:
             raise ValueError('QCM non trouvé')
             
-        # Création du nouveau quiz
+        # Création du nouveau quiz avec le nouveau format de titre pour les étudiants
         return self.quiz_repository.create_from_exercice(
             exercice=exercice,
             etudiant_id=etudiant_id,
-            chrono=chrono
+            chrono=chrono,
+            titre=f"Exercice interactif : {exercice.titre}"
         )
     
     def generate_from_existing_quiz(self, quiz_id, data):
@@ -168,8 +169,14 @@ class QuizGenerationUseCase:
         # Création du nouveau quiz avec variations
         creator_id = enseignant_id if enseignant_id else etudiant_id
         
+        # Déterminer le titre en fonction du type d'utilisateur
+        if etudiant_id:
+            titre = f"Exercice interactif : {source_quiz.titre}"
+        else:
+            titre = f"Quiz généré depuis: {source_quiz.titre}"
+        
         new_quiz = self.quiz_repository.create_empty(
-            titre=f"Quiz généré depuis: {source_quiz.titre}",
+            titre=titre,
             chrono=source_quiz.chrono,
             createur_id=creator_id
         )

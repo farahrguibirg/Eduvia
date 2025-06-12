@@ -15,12 +15,12 @@ const truncateText = (text, length = 40) => {
   return text.length > length ? text.substring(0, length) + '...' : text;
 };
 
-const QuizList = ({ route, API_URL, onBackToIntro }) => {
+const QuizList = ({ route, API_URL, onBackToTypeSelector }) => {
   const navigation = useNavigation();
   const router = useRouter();
   const { setShowIntro } = useAuth();
   const { t } = useLanguage();
-  const { userType, userId } = route.params;
+  const { userType, userId, quizType } = route.params;
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,18 +28,36 @@ const QuizList = ({ route, API_URL, onBackToIntro }) => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
-    console.log('QuizList fetching data with:', { userType, userId, API_URL });
+    console.log('QuizList fetching data with:', { userType, userId, API_URL, quizType });
     
     const fetchQuizzes = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/quiz${userType === 'enseignant' ? `/enseignant/${userId}` : ''}`);
+        // Récupérer tous les quizs
+        const url = `${API_URL}/quiz`;
+        console.log('Fetching quizzes from URL:', url);
+        
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         console.log('Quizzes data received:', data);
-        setQuizzes(data);
+
+        // Filtrer les quizs en fonction du type
+        const filteredQuizzes = data.filter(quiz => {
+          if (quizType === 'official') {
+            // Pour les quiz officiels, on ne garde que ceux créés par les enseignants
+            return quiz.type === 'prof';
+          } else if (quizType === 'practice') {
+            // Pour les quiz d'entraînement, on ne garde que ceux créés par l'étudiant
+            return quiz.type === 'etudiant';
+          }
+          return false;
+        });
+
+        console.log('Filtered quizzes:', filteredQuizzes);
+        setQuizzes(filteredQuizzes);
       } catch (err) {
         console.error('Error fetching quizzes:', err);
         setError(err.message);
@@ -49,7 +67,7 @@ const QuizList = ({ route, API_URL, onBackToIntro }) => {
     };
 
     fetchQuizzes();
-  }, [userType, userId, API_URL]);
+  }, [userType, userId, API_URL, quizType]);
 
   const handleQuizPress = (quiz) => {
     console.log('Quiz pressed:', quiz);
@@ -257,12 +275,32 @@ const QuizList = ({ route, API_URL, onBackToIntro }) => {
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton} 
-          onPress={() => navigation.navigate('index')}
+          onPress={() => {
+            if (userType === 'enseignant') {
+              navigation.reset({
+                index: 0,
+                routes: [{ 
+                  name: 'index',
+                  params: { showIntro: true }
+                }],
+              });
+            } else {
+              navigation.reset({
+                index: 0,
+                routes: [{ 
+                  name: 'quiz',
+                  params: { showTypeSelector: true }
+                }],
+              });
+            }
+          }}
         >
           <Ionicons name="arrow-back" size={24} color="#6818A5" />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>{t('quiz')}</Text>
+          <Text style={styles.headerTitle}>
+            {userType === 'enseignant' ? t('quiz') : (quizType === 'official' ? t('officialQuizzes') : t('interactiveQCM'))}
+          </Text>
         </View>
         <TouchableOpacity 
           style={styles.menuButton}
@@ -295,30 +333,50 @@ const QuizList = ({ route, API_URL, onBackToIntro }) => {
               }}
             >
               <Ionicons name="add-circle-outline" size={20} color="#FFF" />
-              <Text style={styles.newQuizText}>{t('createQuiz')}</Text>
+              <Text style={styles.newQuizText}>
+                {userType === 'etudiant' ? t('generateInteractiveQCM') : t('createQuiz')}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.refreshButton}
               onPress={() => {
                 handleCloseSidebar();
-                onBackToIntro();
+                if (userType === 'enseignant') {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ 
+                      name: 'index',
+                      params: { showIntro: true }
+                    }],
+                  });
+                } else {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ 
+                      name: 'quiz',
+                      params: { showTypeSelector: true }
+                    }],
+                  });
+                }
               }}
             >
               <Text style={styles.refreshButtonText}>{t('quizHome')}</Text>
               <Ionicons name="home-outline" size={18} color="#3C0663" />
             </TouchableOpacity>
-            <View style={styles.legendContainer}>
-              <Text style={styles.legendTitle}>{t('quizColors')}</Text>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendColor, { backgroundColor: '#6818A5' }]} />
-                <Text style={styles.legendText}>{t('studentQuiz')}</Text>
+            {userType === 'etudiant' && (
+              <View style={styles.legendContainer}>
+                <Text style={styles.legendTitle}>{t('quizColors')}</Text>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendColor, { backgroundColor: '#6818A5' }]} />
+                  <Text style={styles.legendText}>{t('studentQuiz')}</Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <View style={[styles.legendColor, { backgroundColor: '#9B6BDF' }]} />
+                  <Text style={styles.legendText}>{t('teacherQuiz')}</Text>
+                </View>
               </View>
-              <View style={styles.legendItem}>
-                <View style={[styles.legendColor, { backgroundColor: '#9B6BDF' }]} />
-                <Text style={styles.legendText}>{t('teacherQuiz')}</Text>
-              </View>
-            </View>
+            )}
           </View>
           <TouchableOpacity
             style={styles.sidebarOverlayTouchable}
